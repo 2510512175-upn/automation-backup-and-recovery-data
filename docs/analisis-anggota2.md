@@ -75,4 +75,18 @@ supaya tidak ada berkas yang tampak seperti backup sah.
 - Pemeriksaan tujuan (`mktemp`) dan pembuatan arsip tidak atomik: kondisi
   folder bisa berubah di antara keduanya (celah TOCTOU), walau kecil pada
   penggunaan praktikum.
-- Uji akses dengan akun berbeda (T17, T18) belum dilakukan pada draf ini.
+  
+-## Uji akses (T17, T18)
+
+| Item | T17 (positif) | T18 (negatif) |
+|---|---|---|
+| Tujuan | Akun berwenang dapat mengakses arsip | Akun tidak berwenang ditolak |
+| Prasyarat | Arsip berizin 600 milik agung; akun `penguji` dibuat | Sama |
+| Langkah | `tar -tzf` sebagai agung | `sudo -u penguji tar -tzf` |
+| Hasil diharapkan | Daftar isi tampil, exit 0 | Permission denied, exit bukan nol |
+| Hasil aktual | Daftar isi tampil (data/, a.txt, b.txt), exit 0 | `Cannot open: Permission denied`, exit 2 |
+| Status | Lulus | Lulus |
+| Pemulihan | `sudo deluser --remove-home penguji` | Sama |
+
+Bukti: `evidence/anggota2-uji-akses.txt`. Uji ini dikerjakan oleh Agung
+karena anggota yang ditugaskan membantu belum terlibat.
