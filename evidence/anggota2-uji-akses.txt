@@ -1,0 +1,16 @@
+=== T17: akun berwenang (pemilik arsip) ===
+agung
+total 4
+-rw------- 1 agung agung 178 Nov 13 14:12 backup_20261113_141208_10307.tar.gz
+data/
+data/b.txt
+data/a.txt
+Exit status: 0
+
+=== T18: akun tidak berwenang ===
+penguji
+tar (child): /tmp/uji/backup/backup_20261113_141208_10307.tar.gz: Cannot open: Permission denied
+tar (child): Error is not recoverable: exiting now
+tar: Child returned status 2
+tar: Error is not recoverable: exiting now
+Exit status: 2
