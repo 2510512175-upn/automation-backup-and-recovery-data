@@ -1,7 +1,7 @@
 # Analisis Konsep Sistem Operasi: Anggota 2 (Pembuatan Arsip)
 
 Penanggung jawab: Muhammad Agung (2510512181)
-Modul: `scripts/backup.sh`. Skenario: T04, T05 (T17, T18 bersama anggota 6).
+Modul: `scripts/backup.sh`. Skenario: T04, T05, T17, T18.
 Bukti: `evidence/anggota2-uji-arsip.txt`, `tests/anggota2-uji-arsip.md`.
 
 ## 1. Sistem berkas dan I/O
@@ -75,18 +75,6 @@ supaya tidak ada berkas yang tampak seperti backup sah.
 - Pemeriksaan tujuan (`mktemp`) dan pembuatan arsip tidak atomik: kondisi
   folder bisa berubah di antara keduanya (celah TOCTOU), walau kecil pada
   penggunaan praktikum.
-  
--## Uji akses (T17, T18)
-
-| Item | T17 (positif) | T18 (negatif) |
-|---|---|---|
-| Tujuan | Akun berwenang dapat mengakses arsip | Akun tidak berwenang ditolak |
-| Prasyarat | Arsip berizin 600 milik agung; akun `penguji` dibuat | Sama |
-| Langkah | `tar -tzf` sebagai agung | `sudo -u penguji tar -tzf` |
-| Hasil diharapkan | Daftar isi tampil, exit 0 | Permission denied, exit bukan nol |
-| Hasil aktual | Daftar isi tampil (data/, a.txt, b.txt), exit 0 | `Cannot open: Permission denied`, exit 2 |
-| Status | Lulus | Lulus |
-| Pemulihan | `sudo deluser --remove-home penguji` | Sama |
-
-Bukti: `evidence/anggota2-uji-akses.txt`. Uji ini dikerjakan oleh Agung
-karena anggota yang ditugaskan membantu belum terlibat.
+- Uji akses (T17, T18) dilakukan dengan satu akun penguji tambahan pada
+  satu komputer. Hasilnya di `evidence/anggota2-uji-akses.txt`. Akun
+  `root` tidak diuji karena melewati pemeriksaan izin biasa.
