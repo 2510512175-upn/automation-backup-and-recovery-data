@@ -28,3 +28,4 @@ sebelum `tar` dijalankan, sehingga cabang kegagalan `tar` tidak diuji.
 | Pemulihan | `sudo deluser --remove-home penguji` | Sama |
 
 Bukti: `evidence/anggota2-uji-akses.txt`. Uji ini dikerjakan oleh Agung
+karena anggota yang ditugaskan membantu belum terlibat.
