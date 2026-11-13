@@ -14,3 +14,17 @@ Penanggung jawab: Muhammad Agung (2510512181). Bukti: `evidence/anggota2-uji-ars
 
 Catatan: pada T05 kegagalan ditangkap oleh pemeriksaan folder tujuan
 sebelum `tar` dijalankan, sehingga cabang kegagalan `tar` tidak diuji.
+
+## Uji akses (T17, T18)
+
+| Item | T17 (positif) | T18 (negatif) |
+|---|---|---|
+| Tujuan | Akun berwenang dapat mengakses arsip | Akun tidak berwenang ditolak |
+| Prasyarat | Arsip berizin 600 milik agung; akun `penguji` dibuat | Sama |
+| Langkah | `tar -tzf` sebagai agung | `sudo -u penguji tar -tzf` |
+| Hasil diharapkan | Daftar isi tampil, exit 0 | Permission denied, exit bukan nol |
+| Hasil aktual | Daftar isi tampil (data/, a.txt, b.txt), exit 0 | `Cannot open: Permission denied`, exit 2 |
+| Status | Lulus | Lulus |
+| Pemulihan | `sudo deluser --remove-home penguji` | Sama |
+
+Bukti: `evidence/anggota2-uji-akses.txt`. Uji ini dikerjakan oleh Agung
