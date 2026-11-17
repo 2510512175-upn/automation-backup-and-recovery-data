@@ -1,0 +1,20 @@
+PENGUJIAN MODUL PEMULIHAN DATA
+ANGGOTA 4
+PROYEK SISTEM OPERASI
+
+T08 - PEMULIHAN ARSIP VALID
+- Backup berhasil dibuat.
+- Checksum SHA-256 berhasil diverifikasi.
+- Recovery berhasil dilakukan.
+- Exit status recovery: 0.
+- Perbandingan menggunakan diff -r tidak menemukan perbedaan.
+- Exit status diff: 0.
+- Status pengujian: LULUS.
+
+T09 - PENOLAKAN ARSIP RUSAK
+- Arsip dimodifikasi menggunakan DATA_RUSAK.
+- Checksum aktual berbeda dari checksum acuan.
+- Sistem menolak proses recovery.
+- Exit status recovery: 1.
+- Direktori hasil pemulihan tetap kosong.
+- Status pengujian: LULUS.
