@@ -1,4 +1,27 @@
 #!/bin/bash
+# === ANGGOTA 5: LOCK & LOG ===
+OUTPUT_DIR="./output"
+LOCK_FILE="/tmp/backup_5a.lock"
+LOG_FILE="$OUTPUT_DIR/backup.log"
+REPORT_FILE="$OUTPUT_DIR/laporan.txt"
+
+mkdir -p "$OUTPUT_DIR"
+
+catat_log() {
+    local level="$1"
+    local pesan="$2"
+    echo "[$(date '+%Y-%m-%d %H:%M:%S')] [PID:$$] [$level] $pesan" | tee -a "$LOG_FILE"
+}
+
+# Buka file descriptor 200 untuk exclusive lock non-blocking
+exec 200>"$LOCK_FILE"
+if ! flock -n 200; then
+    catat_log "ERROR" "Eksekusi ditolak: proses backup lain masih berjalan."
+    exit 1
+fi
+
+catat_log "INFO" "Lock berhasil diperoleh. Memulai rangkaian backup..."
+# ====================================
 
 # Script pembuatan arsip backup
 # Anggota 2 - Proyek Sistem Operasi 5A
@@ -60,6 +83,24 @@ if tar -czf "$ARCHIVE" -C "$(dirname "$SOURCE")" "$(basename "$SOURCE")"; then
         echo "BACKUP BERHASIL!"
         echo "Arsip: $ARCHIVE"
         echo "================================"
+
+# === ANGGOTA 5: GENERATOR LAPORAN ===
+    WAKTU_SELESAI=$(date '+%Y-%m-%d %H:%M:%S')
+    CHECKSUM_ARSIP=$(sha256sum "$ARCHIVE" | awk '{print $1}')
+
+    cat <<EOF > "$REPORT_FILE"
+==========================================
+LAPORAN OTOMASI BACKUP & VERIFIKASI (5A)
+==========================================
+Nama Arsip       : $ARCHIVE
+Waktu Eksekusi   : $WAKTU_SELESAI
+Checksum SHA-256 : $CHECKSUM_ARSIP
+Hasil Verifikasi : LOLOS (Arsip Valid & Terverifikasi)
+Status Proses    : BERHASIL (PID: $$)
+==========================================
+EOF
+
+    catat_log "INFO" "Backup berhasil ($ARCHIVE) dan laporan ditulis ke $REPORT_FILE"
         exit 0
     else
         echo "ERROR: Arsip tidak valid."
