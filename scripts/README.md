@@ -5,12 +5,27 @@ Direktori ini berisi Shell Script untuk menjalankan setiap bagian sistem.
 | Nama file | Penanggung jawab | Fungsi |
 |---|---|---|
 | `validation.sh` | Afwan | Memvalidasi sumber, tujuan, dan parameter sebelum backup dijalankan. |
-| `backup.sh` | Agung | Membuat arsip backup bertanggal dan menerapkan pembatasan akses pada arsip. |
+| `backup.sh` | Agung dan Izzul | Membuat arsip backup bertanggal, menerapkan pembatasan akses arsip, mengelola lock, mencatat log, dan menghasilkan laporan backup. |
 | `verify.sh` | Afaf | Membuat dan memeriksa checksum arsip. |
 | `restore.sh` | Panggi | Memeriksa arsip dan memulihkan data ke direktori pengujian. |
-| `lock.sh` | Izzul | Mengelola lock agar proses backup bersamaan tidak saling bertabrakan. |
-| `report.sh` | Izzul | Mencatat aktivitas dan menghasilkan laporan backup. |
 | `monitoring.sh` | Rafif | Mengamati proses serta penggunaan CPU dan memori saat pengujian. |
+
+## Pengelolaan lock, log, dan laporan
+
+Fungsi lock, log, dan laporan Izzul diintegrasikan ke dalam `backup.sh`, bukan berada pada file `lock.sh` atau `report.sh` terpisah.
+
+- `output/backup_5a.lock` digunakan oleh `flock` untuk mencegah dua proses backup berjalan bersamaan.
+- `output/backup.log` mencatat waktu, PID, tingkat pesan, dan aktivitas atau hasil proses backup.
+- `output/laporan.txt` memuat nama arsip, waktu eksekusi, checksum SHA-256, hasil verifikasi, dan status proses.
+- Direktori `output` ditentukan berdasarkan lokasi proyek. Jadi, lokasi log dan laporan tidak berubah ketika script dijalankan dari direktori terminal yang berbeda.
+- File lock, log, dan laporan dibuat dengan izin pemilik saja (`600`) melalui `umask 077` dan pengaturan izin eksplisit.
+- File lock tidak dihapus setelah proses selesai. `flock` melepas kunci ketika file descriptor 200 ditutup saat proses berakhir.
+
+Jalankan pengujian T10-T12 dengan:
+
+```bash
+bash tests/test-izzul-lock-log-report.sh
+```
 
 ## Ketentuan pengembangan
 
