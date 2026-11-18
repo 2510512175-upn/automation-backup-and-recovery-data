@@ -26,8 +26,24 @@ dipulihkan ke direktori mana pun.
 dan PID mencegah dua proses pada detik yang sama menulis ke berkas
 yang sama.
 
-**Validasi.** `[ -s ]` memastikan arsip tidak kosong, dan `tar -tzf` membaca
-seluruh arsip untuk memastikan strukturnya utuh. Validasi ini membuktikan
+**Validasi path sumber dan tujuan.** Parameter kosong ditolak sebelum
+normalisasi path, sehingga string kosong tidak pernah berubah menjadi `/`.
+Setelah validasi awal Anggota 1, `realpath -e` menyelesaikan symbolic link
+serta komponen path menjadi lokasi fisik. Dengan demikian, symbolic link
+sumber menuju direktori akan diarsipkan berdasarkan isi direktori targetnya,
+bukan disimpan sebagai symbolic link. Path tujuan juga diresolusikan agar
+pemeriksaan cakupan tidak dapat dilewati dengan symbolic link atau trailing
+slash.
+
+Direktori tujuan ditolak apabila sama dengan atau berada di dalam direktori
+sumber. Pemeriksaan menggunakan prefix path fisik dengan batas `/`, sehingga
+nama seperti `/data` dan `/data-lain` tidak dianggap memiliki hubungan induk-anak.
+Sumber `/` juga akan ditolak karena direktori tujuan mana pun pasti berada di
+dalam cakupan tersebut. Penolakan konfigurasi path ini menggunakan exit status
+7. Parameter kosong memakai exit status 2.
+
+**Validasi arsip.** `[ -s ]` memastikan arsip tidak kosong, dan `tar -tzf`
+membaca daftar isi untuk memeriksa struktur arsip. Validasi ini membuktikan
 arsip dapat dibaca, bukan bahwa isinya tidak diubah. Itu tugas checksum
 (Anggota 3).
 
@@ -56,8 +72,12 @@ siapa pun yang memperoleh berkasnya dari sumber lain dapat membacanya.
 
 | Kondisi | Exit status |
 |---|---|
-| Jumlah argumen salah | 2 |
-| Sumber/tujuan tidak ditemukan, tujuan tidak dapat ditulis, `tar` atau `chmod` gagal, arsip tidak valid | 1 |
+| Jumlah argumen salah atau parameter sumber/tujuan kosong | 2 |
+| Sumber tidak ditemukan/tidak valid | 3 |
+| Tujuan tidak ditemukan/tidak valid | 5 |
+| Tujuan tidak dapat ditulis | 6 |
+| Tujuan sama dengan atau berada di dalam sumber | 7 |
+| `tar`, `chmod`, checksum, atau pemeriksaan arsip gagal | 1 atau status kegagalan modul terkait |
 | Backup berhasil dan arsip valid | 0 |
 
 `set -Eeuo pipefail` menghentikan skrip pada kesalahan yang tidak
@@ -75,6 +95,9 @@ supaya tidak ada berkas yang tampak seperti backup sah.
 - Pemeriksaan tujuan (`mktemp`) dan pembuatan arsip tidak atomik: kondisi
   folder bisa berubah di antara keduanya (celah TOCTOU), walau kecil pada
   penggunaan praktikum.
+- `realpath -e` dari paket `coreutils` dibutuhkan untuk menyelesaikan path.
+  Implementasi ini menolak sumber `/` karena tidak ada direktori tujuan yang
+  dapat berada di luar root filesystem.
 - Uji akses (T17, T18) dilakukan dengan satu akun penguji tambahan pada
   satu komputer. Hasilnya di `evidence/anggota2-uji-akses.txt`. Akun
   `root` tidak diuji karena melewati pemeriksaan izin biasa.

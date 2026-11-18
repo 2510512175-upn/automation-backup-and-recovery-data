@@ -60,19 +60,21 @@ fi
 
 catat_log "INFO" "Lock berhasil diperoleh. Memulai rangkaian backup."
 
-# Memeriksa jumlah parameter.
+# Memeriksa jumlah parameter dan menolak nilai kosong sebelum normalisasi path.
 if [[ "$#" -ne 2 ]]; then
     catat_log "ERROR" "Parameter tidak sesuai. Penggunaan: $0 <folder_sumber> <folder_tujuan> (exit status: 2)."
     printf 'Penggunaan: %s <folder_sumber> <folder_tujuan>\n' "$0" >&2
     exit 2
 fi
 
-SOURCE="${1%/}"
-DEST="${2%/}"
+SOURCE_INPUT="$1"
+DEST_INPUT="$2"
 
-# Menjaga path root '/' agar tidak berubah menjadi string kosong.
-[[ -n "$SOURCE" ]] || SOURCE="/"
-[[ -n "$DEST" ]] || DEST="/"
+if [[ -z "$SOURCE_INPUT" || -z "$DEST_INPUT" ]]; then
+    catat_log "ERROR" "Parameter sumber dan tujuan tidak boleh kosong (exit status: 2)."
+    printf 'ERROR: Parameter sumber dan tujuan tidak boleh kosong.\n' >&2
+    exit 2
+fi
 
 VALIDATION_SCRIPT="$SCRIPT_DIR/validation.sh"
 VERIFY_SCRIPT="$SCRIPT_DIR/verify.sh"
@@ -87,14 +89,55 @@ if [[ ! -f "$VERIFY_SCRIPT" ]]; then
     exit 1
 fi
 
-# Memvalidasi sumber dan tujuan menggunakan modul Anggota 1.
-if bash "$VALIDATION_SCRIPT" "$SOURCE" "$DEST"; then
+# Memvalidasi path masukan menggunakan modul Anggota 1 sebelum normalisasi.
+if bash "$VALIDATION_SCRIPT" "$SOURCE_INPUT" "$DEST_INPUT"; then
     catat_log "INFO" "Validasi sumber dan tujuan berhasil."
 else
     VALIDATION_STATUS=$?
     catat_log "ERROR" "Backup dihentikan karena validasi gagal (exit status: $VALIDATION_STATUS)."
     exit "$VALIDATION_STATUS"
 fi
+
+# Resolve symbolic link dan komponen path agar pemeriksaan cakupan memakai
+# lokasi fisik yang sebenarnya. realpath juga menghapus trailing slash.
+if ! command -v realpath >/dev/null 2>&1; then
+    catat_log "ERROR" "Perintah realpath tidak tersedia. Instal paket coreutils terlebih dahulu."
+    exit 127
+fi
+
+if ! SOURCE="$(realpath -e -- "$SOURCE_INPUT")"; then
+    catat_log "ERROR" "Path sumber tidak dapat diresolusikan: $SOURCE_INPUT"
+    exit 3
+fi
+
+if ! DEST="$(realpath -e -- "$DEST_INPUT")"; then
+    catat_log "ERROR" "Path tujuan tidak dapat diresolusikan: $DEST_INPUT"
+    exit 5
+fi
+
+# Cek ulang tipe direktori setelah path diresolusikan untuk mengurangi risiko
+# perubahan path di antara validasi awal dan pembuatan arsip.
+if [[ ! -d "$SOURCE" ]]; then
+    catat_log "ERROR" "Sumber bukan direktori setelah path diresolusikan: $SOURCE"
+    exit 3
+fi
+
+if [[ ! -d "$DEST" ]]; then
+    catat_log "ERROR" "Tujuan bukan direktori setelah path diresolusikan: $DEST"
+    exit 5
+fi
+
+# Tujuan tidak boleh sama dengan atau berada di dalam sumber. Pemeriksaan
+# dilakukan setelah realpath agar symbolic link dan trailing slash tidak
+# dapat melewati validasi cakupan direktori.
+SOURCE_PREFIX="${SOURCE%/}/"
+if [[ "$DEST" == "$SOURCE" || "${DEST:0:${#SOURCE_PREFIX}}" == "$SOURCE_PREFIX" ]]; then
+    catat_log "ERROR" "Konfigurasi path ditolak: direktori tujuan sama dengan atau berada di dalam direktori sumber."
+    printf 'ERROR: Direktori tujuan tidak boleh sama dengan atau berada di dalam direktori sumber.\n' >&2
+    exit 7
+fi
+
+catat_log "INFO" "Path sumber dan tujuan berhasil diresolusikan. Sumber: $SOURCE | Tujuan: $DEST"
 
 # Uji penulisan nyata sebagai lapisan tambahan setelah validasi awal.
 if ! TEST_FILE="$(mktemp "$DEST/.write-test.XXXXXX")"; then

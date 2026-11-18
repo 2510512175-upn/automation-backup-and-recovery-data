@@ -28,4 +28,30 @@ sebelum `tar` dijalankan, sehingga cabang kegagalan `tar` tidak diuji.
 | Pemulihan | `sudo deluser --remove-home penguji` | Sama |
 
 Bukti: `evidence/anggota2-uji-akses.txt`. Uji ini dikerjakan oleh Agung
-karena anggota yang ditugaskan membantu belum terlibat.
+
+## Pengujian regresi tambahan: keamanan path backup
+
+Kasus tambahan ini memeriksa kombinasi path yang tidak tercakup pada T04-T05.
+Pengujian otomatis berjalan pada salinan sementara dan tidak mengubah folder
+sumber atau output proyek.
+
+| Kasus | Hasil yang diharapkan | Hasil regression lokal |
+|---|---|---|
+| Parameter sumber kosong | Ditolak, exit 2; tidak berubah menjadi `/` | Lulus |
+| Parameter tujuan kosong | Ditolak, exit 2; tidak berubah menjadi `/` | Lulus |
+| Sumber berupa symbolic link ke direktori | Isi direktori target yang sebenarnya masuk ke arsip | Lulus |
+| Tujuan sama dengan sumber | Ditolak, exit 7 | Lulus |
+| Tujuan berada di dalam sumber | Ditolak, exit 7 | Lulus |
+| Symbolic link tujuan mengarah ke dalam sumber | Ditolak setelah path diresolusikan, exit 7 | Lulus |
+| Sumber `/` | Ditolak, exit 7 karena setiap tujuan berada di dalam root | Lulus |
+| Nama direktori mengandung karakter glob | Pemeriksaan induk-anak tetap akurat | Lulus |
+
+Jalankan dengan:
+
+```bash
+bash tests/test-backup-path-safety.sh
+```
+
+Catatan: status di atas merupakan hasil regression test lokal pada salinan
+repository. Pengujian ulang pada VM Ubuntu kelompok tetap perlu dilakukan
+untuk bukti akhir lingkungan proyek.
