@@ -1,0 +1,2 @@
+raff02@raff-server:~/automation-backup-and-recovery-data/scripts$ du -sh
+44K     .
