@@ -8,7 +8,7 @@ Direktori ini berisi Shell Script untuk menjalankan setiap bagian sistem.
 | `backup.sh` | Agung dan Izzul | Membuat arsip backup bertanggal, menerapkan pembatasan akses arsip, mengelola lock, mencatat log, dan menghasilkan laporan backup. |
 | `verify.sh` | Afaf | Membuat dan memeriksa checksum arsip. |
 | `restore.sh` | Panggi | Memeriksa arsip dan memulihkan data ke direktori pengujian. |
-| `monitoring.sh` | Rafif | Mengamati proses serta penggunaan CPU dan memori saat pengujian. |
+| `monitoring.sh` | Rafif | Mengamati penggunaan CPU dan memori sistem serta metrik proses berdasarkan PID. |
 
 ## Pengelolaan lock, log, dan laporan
 
@@ -25,6 +25,33 @@ Jalankan pengujian T10-T12 dengan:
 
 ```bash
 bash tests/test-izzul-lock-log-report.sh
+```
+
+
+## Monitoring CPU, memori, dan proses
+
+Dari akar proyek, gunakan perintah berikut:
+
+```bash
+# Snapshot penggunaan CPU dan memori sistem
+bash scripts/monitoring.sh
+
+# Pemantauan sistem berulang setiap 5 detik
+bash scripts/monitoring.sh --watch
+
+# Mengambil satu sampel proses berdasarkan PID
+bash scripts/monitoring.sh --pid PID
+
+# Memantau PID setiap 1 detik sampai proses selesai
+bash scripts/monitoring.sh --watch-pid PID
+```
+
+Log monitoring disimpan di `logs/monitoring.log` pada akar proyek, termasuk ketika script dipanggil dari direktori terminal lain. Pengamatan proses mencatat PID, nama dan status proses, `%CPU`, `%MEM`, serta RSS dalam KiB. PID tidak valid ditolak tanpa membuat nilai metrik palsu.
+
+Jalankan pengujian otomatis anggota 6 dengan:
+
+```bash
+bash tests/test-monitoring-rafif.sh
 ```
 
 ## Ketentuan pengembangan
