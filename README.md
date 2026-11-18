@@ -1,6 +1,6 @@
 # Sistem Otomasi Backup dan Pemulihan Data Linux
 
-Proyek Akhir Mata Kuliah Sistem Operasi  
+Proyek Akhir Mata Kuliah Sistem Operasi
 S1 Sistem Informasi – UPN Veteran Jakarta
 
 ## Deskripsi
@@ -46,4 +46,4 @@ Pembagian tugas enam anggota tercantum pada [`docs/contribution-map.md`](docs/co
 
 ## Status pengerjaan
 
-Tahap persiapan struktur repository dan rancangan awal. Fitur belum diimplementasikan.
+Tahap persiapan struktur repository dan rancangan awal. Fitur sedang diimplementasikan.
