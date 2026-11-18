@@ -1,0 +1,45 @@
+=== 1. EKSEKUSI ./monitoring.sh ===
+================================================
+            PEMANTAUAN SISTEM CADANGAN
+================================================
+Waktu            : 2026-11-18 08:51:03
+Penggunaan CPU   : 4.21%
+Penggunaan Memori: 22.43%
+------------------------------------------------
+Status CPU   : NORMAL
+Status Memori: NORMAL
+------------------------------------------------
+PROSES BACKUP:
+Tidak ditemukan proses backup yang aktif.
+
+5 PROSES DENGAN PENGGUNAAN CPU TERTINGGI:
+    PID COMMAND          %CPU %MEM
+    298 kworker/0:3-cgw   0.2  0.0
+   1393 sshd-session      0.2  0.4
+   1635 kworker/0:1-eve   0.0  0.0
+      1 systemd           0.0  0.9
+   1959 kworker/u4:0-ev   0.0  0.0
+================================================
+
+=== 2. CEK PERMISSION & UKURAN FILE (ls -lh) ===
+raff02@raff-server:~/automation-backup-and-recovery-data/scripts$ ls -lh
+total 36K
+-rw-rw-r-- 1 raff02 raff02 1.3K Nov 18 07:51 README.md
+-rwxrwxr-x 1 raff02 raff02 3.0K Nov 18 07:51 backup.sh
+drwxrwxr-x 2 raff02 raff02 4.0K Nov 18 08:40 logs
+-rwxrwxr-x 1 raff02 raff02 4.6K Nov 18 08:39 monitoring.sh
+-rwxrwxr-x 1 raff02 raff02 4.4K Nov 18 07:51 restore.sh
+-rwxrwxr-x 1 raff02 raff02 1.2K Nov 18 07:51 validation.sh
+-rwxrwxr-x 1 raff02 raff02 3.0K Nov 18 07:51 verify.sh
+
+=== 3. CEK UKURAN DIREKTORI (du -sh) ===
+raff02@raff-server:~/automation-backup-and-recovery-data/scripts$ du -sh
+44K     .
+
+=== 4. ISI LOG MONITORING (cat logs/monitoring.log) ===
+raff02@raff-server:~/automation-backup-and-recovery-data/scripts$ cat logs/monitoring.log
+2026-11-18 08:40:25,CPU=2.15%,MEMORY=22.42%,CPU_STATUS=NORMAL,MEMORY_STATUS=NORMAL
+2026-11-18 08:51:03,CPU=4.21%,MEMORY=22.43%,CPU_STATUS=NORMAL,MEMORY_STATUS=NORMAL
+2026-11-18 08:51:09,CPU=1.06%,MEMORY=22.43%,CPU_STATUS=NORMAL,MEMORY_STATUS=NORMAL
+2026-11-18 08:51:15,CPU=0.00%,MEMORY=22.43%,CPU_STATUS=NORMAL,MEMORY_STATUS=NORMAL
+2026-11-18 08:51:21,CPU=1.06%,MEMORY=22.43%,CPU_STATUS=NORMAL,MEMORY_STATUS=NORMAL
