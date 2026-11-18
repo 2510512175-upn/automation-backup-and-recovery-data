@@ -1,0 +1,9 @@
+raff02@raff-server:~/automation-backup-and-recovery-data/scripts$ ls -lh
+total 36K
+-rw-rw-r-- 1 raff02 raff02 1.3K Nov 18 07:51 README.md
+-rwxrwxr-x 1 raff02 raff02 3.0K Nov 18 07:51 backup.sh
+drwxrwxr-x 2 raff02 raff02 4.0K Nov 18 08:40 logs
+-rwxrwxr-x 1 raff02 raff02 4.6K Nov 18 08:39 monitoring.sh
+-rwxrwxr-x 1 raff02 raff02 4.4K Nov 18 07:51 restore.sh
+-rwxrwxr-x 1 raff02 raff02 1.2K Nov 18 07:51 validation.sh
+-rwxrwxr-x 1 raff02 raff02 3.0K Nov 18 07:51 verify.sh

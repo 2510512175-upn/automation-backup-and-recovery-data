@@ -1,0 +1,21 @@
+================================================
+            PEMANTAUAN SISTEM CADANGAN
+================================================
+Waktu            : 2026-11-18 08:51:03
+Penggunaan CPU   : 4.21%
+Penggunaan Memori: 22.43%
+------------------------------------------------
+Status CPU   : NORMAL
+Status Memori: NORMAL
+------------------------------------------------
+PROSES BACKUP:
+Tidak ditemukan proses backup yang aktif.
+
+5 PROSES DENGAN PENGGUNAAN CPU TERTINGGI:
+    PID COMMAND          %CPU %MEM
+    298 kworker/0:3-cgw   0.2  0.0
+   1393 sshd-session      0.2  0.4
+   1635 kworker/0:1-eve   0.0  0.0
+      1 systemd           0.0  0.9
+   1959 kworker/u4:0-ev   0.0  0.0
+================================================
