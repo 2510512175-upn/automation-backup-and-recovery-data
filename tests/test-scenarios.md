@@ -30,3 +30,13 @@ Data uji harus berupa berkas dummy pada direktori khusus proyek. Catat jumlah be
 ## Pengujian kelompok yang wajib
 
 Pengujian dua proses backup bersamaan tetap wajib dibuktikan dalam laporan kelompok, meskipun tidak seluruhnya ditampilkan dalam demonstrasi individu.
+
+## Pengujian regresi tambahan untuk path backup
+
+Di luar T01-T18, `tests/test-backup-path-safety.sh` menguji parameter sumber/tujuan kosong,
+source symbolic link, tujuan yang sama atau berada di dalam sumber, symbolic link tujuan,
+nama direktori dengan karakter glob, dan sumber root `/`. Pengujian ini memastikan
+normalisasi path tidak mengubah parameter kosong menjadi root dan tidak menyebabkan
+arsip backup masuk ke dalam sumbernya sendiri.
+
+Jalankan seluruh regression test lokal dengan `bash tests/run-regression-local.sh`.

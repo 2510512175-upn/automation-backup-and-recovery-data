@@ -54,6 +54,25 @@ Jalankan pengujian otomatis anggota 6 dengan:
 bash tests/test-monitoring-rafif.sh
 ```
 
+## Pengujian regresi lokal
+
+Untuk menguji integrasi validasi, backup, checksum, restore, keamanan path,
+lock/log/laporan, dan monitoring secara berurutan, jalankan dari akar proyek:
+
+```bash
+bash tests/run-regression-local.sh
+```
+
+Pengujian keamanan path backup juga dapat dijalankan secara terpisah:
+
+```bash
+bash tests/test-backup-path-safety.sh
+```
+
+Regression test menggunakan direktori sementara. Hasilnya tidak menggantikan
+pengujian dan screenshot pada VM Ubuntu kelompok, serta tidak mencakup Docker
+T13-T14.
+
 ## Ketentuan pengembangan
 
 1. Setiap anggota mengerjakan modul yang menjadi tanggung jawabnya pada branch Git masing-masing.
