@@ -1,0 +1,2 @@
+$ find /home/afaf/automation-backup-and-recovery-data/logs -maxdepth 2 -type f -print -exec tail -n 15 \{\} \; 
+Exit status: 0
