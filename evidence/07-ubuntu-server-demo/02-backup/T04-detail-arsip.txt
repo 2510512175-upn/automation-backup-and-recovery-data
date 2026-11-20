@@ -1,4 +1,4 @@
-$ bash -c $'\n    ls -lh "$DEST"\n    echo "=== PERMISSION ==="\n    stat -c "%a %n" "$ARCHIVE" "$ARCHIVE.sha256"\n    echo "=== ISI ARSIP ==="\n    tar -tzf "$ARCHIVE"\n  ' 
+$ bash -c $'\n    ls -lh "$DEST"\n    echo "=== PERMISSION ==="\n    stat -c "%a %n" "$ARCHIVE" "$ARCHIVE.sha256"\n    echo "=== ISI ARSIP ==="\n    tar -tzf "$ARCHIVE"\n  '
 total 8.0K
 -rw------- 1 afaf afaf 288 Nov 19 04:40 backup_20261119_044037_4778.tar.gz
 -rw------- 1 afaf afaf 101 Nov 19 04:40 backup_20261119_044037_4778.tar.gz.sha256

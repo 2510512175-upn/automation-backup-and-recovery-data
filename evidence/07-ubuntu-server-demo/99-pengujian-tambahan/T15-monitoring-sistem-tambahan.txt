@@ -1,4 +1,4 @@
-$ bash /home/afaf/automation-backup-and-recovery-data/scripts/monitoring.sh 
+$ bash /home/afaf/automation-backup-and-recovery-data/scripts/monitoring.sh
 
 ==========================================
        PEMANTAUAN SISTEM CADANGAN

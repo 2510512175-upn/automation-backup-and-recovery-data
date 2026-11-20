@@ -1,4 +1,4 @@
-$ bash /home/afaf/automation-backup-and-recovery-data/scripts/validation.sh /home/afaf/automation-backup-and-recovery-data/tests/demo/source /home/afaf/automation-backup-and-recovery-data/output/demo-backup 
+$ bash /home/afaf/automation-backup-and-recovery-data/scripts/validation.sh /home/afaf/automation-backup-and-recovery-data/tests/demo/source /home/afaf/automation-backup-and-recovery-data/output/demo-backup
 Validasi berhasil.
 Sumber: /home/afaf/automation-backup-and-recovery-data/tests/demo/source
 Tujuan: /home/afaf/automation-backup-and-recovery-data/output/demo-backup

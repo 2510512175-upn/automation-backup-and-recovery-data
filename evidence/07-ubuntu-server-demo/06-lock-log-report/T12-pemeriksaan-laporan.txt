@@ -1,4 +1,4 @@
-$ bash -c $'\nif [ -s "$PROJECT/output/laporan.txt" ]; then\n    echo "Laporan ditemukan."\n    echo "=== ISI LAPORAN ==="\n    cat "$PROJECT/output/laporan.txt"\nelse\n    echo "ERROR: Laporan tidak ditemukan atau kosong."\n    exit 1\nfi\n' 
+$ bash -c $'\nif [ -s "$PROJECT/output/laporan.txt" ]; then\n    echo "Laporan ditemukan."\n    echo "=== ISI LAPORAN ==="\n    cat "$PROJECT/output/laporan.txt"\nelse\n    echo "ERROR: Laporan tidak ditemukan atau kosong."\n    exit 1\nfi\n'
 Laporan ditemukan.
 === ISI LAPORAN ===
 ==========================================

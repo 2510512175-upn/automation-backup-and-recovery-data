@@ -1,4 +1,4 @@
-$ bash /home/afaf/automation-backup-and-recovery-data/scripts/backup.sh /home/afaf/automation-backup-and-recovery-data/tests/demo/lock/source /home/afaf/automation-backup-and-recovery-data/output/demo-lock 
+$ bash /home/afaf/automation-backup-and-recovery-data/scripts/backup.sh /home/afaf/automation-backup-and-recovery-data/tests/demo/lock/source /home/afaf/automation-backup-and-recovery-data/output/demo-lock
 [2026-11-19 05:18:01] [PID:5717] [INFO] Lock berhasil diperoleh. Memulai rangkaian backup.
 Validasi berhasil.
 Sumber: /home/afaf/automation-backup-and-recovery-data/tests/demo/lock/source
