@@ -50,7 +50,7 @@ Komponen yang digunakan:
 
 Informasi versi sistem operasi, perangkat lunak, dan spesifikasi mesin virtual dicatat pada:
 
-`evidence/07-ubuntu-server-demo/00-environment/system-info.txt`
+[`evidence/07-ubuntu-server-demo/00-environment/system-info.txt`](evidence/07-ubuntu-server-demo/00-environment/system-info.txt)
 
 ## 5. Identitas dan Pembagian Tugas Anggota
 
@@ -62,7 +62,7 @@ Kelompok terdiri atas enam anggota dan telah memperoleh persetujuan dosen pengam
 | 2 | 2510512178 | Muhammad Nur Ihsani Izzul Haq Rosyid | Pengelolaan lock, log, laporan backup, dan integrasi Docker. |
 | 3 | 2510512181 | Muhammad Agung Budi Laksono | Pembuatan arsip backup, pengaturan permission, dan pengujian akses arsip. |
 | 4 | 2510512188 | Panggi Hidayah | Pemulihan data dan pemeriksaan kesesuaian hasil restore. |
-| 5 | 2510512195 | Muhamad Afwan Imam Nasuha | Validasi sumber, direktori tujuan, parameter, dan hak akses direktori. |
+| 5 | 2510512195 | Muhamad Afwan Imam Nasuha | Validasi sumber, direktori tujuan, parameter, dan hak akses direktori. Validasi sumber, direktori tujuan, parameter, dan hak akses direktori, serta pemeliharaan repository GitHub, penataan struktur direktori dan berkas, dan pengelolaan dokumentasi proyek. |
 | 6 | 2510512202 | Muhammad Rafif Husein Salam | Monitoring proses backup, penggunaan CPU dan memori, serta membantu pengujian hak akses arsip. |
 
 Rincian kontribusi dan pembagian pekerjaan masing-masing anggota tersedia pada [`docs/contribution-map.md`](docs/contribution-map.md).
@@ -71,7 +71,7 @@ Rincian kontribusi dan pembagian pekerjaan masing-masing anggota tersedia pada [
 
 Pengujian dilakukan melalui skenario positif dan negatif. Skenario positif digunakan untuk memastikan fitur berjalan sesuai fungsinya, sedangkan skenario negatif digunakan untuk memastikan sistem menolak kondisi atau input yang tidak sesuai.
 
-Seluruh bukti pengujian T01–T18 disimpan di direktori induk evidence/07-ubuntu-server-demo/. Nama direktori pada kolom Bukti merupakan subdirektori dari direktori tersebut.
+Seluruh bukti pengujian T01–T18 disimpan di direktori induk [`evidence/07-ubuntu-server-demo/`](evidence/07-ubuntu-server-demo/). Nama direktori pada kolom Bukti merupakan subdirektori dari direktori tersebut.
 
 | ID | Penanggung Jawab | Positif | Negatif | Hasil Aktual | Status | Bukti |
 |---|---|---|---|---|---|---|
