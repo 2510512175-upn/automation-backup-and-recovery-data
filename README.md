@@ -140,3 +140,192 @@ Hasil aktual setiap pengujian dan bukti pelaksanaannya telah didokumentasikan da
 Sistem otomasi backup dan pemulihan data Linux berhasil menjalankan fungsi utama sesuai skenario pengujian yang telah ditetapkan. Pengujian positif menunjukkan fitur dapat berjalan sesuai tujuan, sedangkan pengujian negatif menunjukkan sistem mampu menolak input, arsip, proses, dan akses yang tidak sesuai.
 
 Dokumentasi kontribusi anggota, hasil pengujian, serta evidence disertakan untuk mendukung evaluasi proyek dan keterlacakan pekerjaan setiap anggota kelompok.
+
+
+## 10. Panduan Instalasi dan Penggunaan
+
+### 10.1 Persiapan Lingkungan
+
+Sistem dijalankan pada Linux dengan Bash dan utilitas pendukung berikut:
+
+- GNU Coreutils, termasuk `realpath` dan `sha256sum`.
+- GNU Tar dan gzip untuk pengelolaan arsip.
+- Util-linux untuk mekanisme `flock`.
+- Procps untuk pemantauan proses.
+- Findutils untuk pencarian berkas.
+
+Pada Ubuntu Server, dependensi dapat dipasang menggunakan:
+
+```bash
+sudo apt update
+sudo apt install -y bash coreutils findutils tar gzip util-linux procps
+```
+
+Verifikasi ketersediaan utilitas:
+
+```bash
+command -v bash realpath tar gzip sha256sum flock ps
+```
+
+Pastikan terminal berada pada direktori utama repository sebelum menjalankan script.
+
+### 10.2 Menyiapkan Data Pengujian
+
+```bash
+WORK_DIR="/tmp/backup-demo"
+
+mkdir -p "$WORK_DIR/source" "$WORK_DIR/destination"
+
+printf 'Dokumen pertama\n' > "$WORK_DIR/source/a.txt"
+printf 'Dokumen kedua\n' > "$WORK_DIR/source/b.txt"
+```
+
+### 10.3 Menjalankan Backup
+
+Jalankan backup dengan dua parameter berupa direktori sumber dan direktori tujuan:
+
+```bash
+bash scripts/backup.sh "$WORK_DIR/source" "$WORK_DIR/destination"
+```
+
+Cari arsip terbaru:
+
+```bash
+ARCHIVE="$(find "$WORK_DIR/destination" \
+  -maxdepth 1 -type f -name 'backup_*.tar.gz' \
+  -printf '%T@ %p\n' | sort -nr | head -n 1 | cut -d' ' -f2-)"
+
+echo "$ARCHIVE"
+```
+
+### 10.4 Verifikasi Checksum
+
+Memeriksa integritas arsip:
+
+```bash
+bash scripts/verify.sh verify "$ARCHIVE"
+```
+
+Membuat file checksum:
+
+```bash
+bash scripts/verify.sh generate "$ARCHIVE"
+```
+
+Shortcut verifikasi:
+
+```bash
+bash scripts/verify.sh "$ARCHIVE"
+```
+
+### 10.5 Pemulihan Data (Restore)
+
+Direktori tujuan restore harus tersedia, dapat ditulis, dan kosong.
+
+```bash
+mkdir -p "$WORK_DIR/restore"
+
+bash scripts/restore.sh "$ARCHIVE" "$WORK_DIR/restore"
+```
+
+Bandingkan hasil pemulihan dengan sumber:
+
+```bash
+diff -r "$WORK_DIR/source" "$WORK_DIR/restore/source"
+```
+
+Jika tidak ada output dan exit status 0, hasil pemulihan identik dengan sumber.
+
+### 10.6 Monitoring CPU, Memori, dan Proses
+
+Snapshot kondisi sistem:
+
+```bash
+bash scripts/monitoring.sh
+```
+
+Monitoring sistem berulang:
+
+```bash
+bash scripts/monitoring.sh --watch
+```
+
+Monitoring satu PID:
+
+```bash
+bash scripts/monitoring.sh --pid PID
+```
+
+Monitoring PID sampai proses selesai:
+
+```bash
+bash scripts/monitoring.sh --watch-pid PID
+```
+
+Ganti `PID` dengan nomor proses Linux yang ingin diamati.
+
+### 10.7 Menjalankan Regression Test
+
+Seluruh regression test lokal:
+
+```bash
+bash tests/run-regression-local.sh
+```
+
+Pengujian keamanan path:
+
+```bash
+bash tests/test-backup-path-safety.sh
+```
+
+Pengujian lock, log, dan laporan:
+
+```bash
+bash tests/test-izzul-lock-log-report.sh
+```
+
+Pengujian monitoring:
+
+```bash
+bash tests/test-monitoring-rafif.sh
+```
+
+Regression test lokal tidak menggantikan demonstrasi dan screenshot pada VM Ubuntu Server. Pengujian Docker T13–T14 dilakukan secara terpisah.
+
+### 10.8 Pengujian Docker Read-only
+
+Instalasi Docker pada Ubuntu Server:
+
+```bash
+sudo apt install -y docker.io
+sudo systemctl enable --now docker
+sudo docker pull alpine:3.21
+```
+
+Membaca laporan dari container:
+
+```bash
+sudo docker run --rm \
+  --mount "type=bind,src=$PWD/output,dst=/data,readonly" \
+  alpine:3.21 cat /data/laporan.txt
+```
+
+Menguji penolakan operasi append:
+
+```bash
+sudo docker run --rm \
+  --mount "type=bind,src=$PWD/output,dst=/data,readonly" \
+  alpine:3.21 sh -c 'echo "UJI-READ-ONLY" >> /data/laporan.txt'
+```
+
+Perintah kedua diharapkan gagal karena direktori dipasang dalam mode read-only.
+
+### 10.9 Pembersihan Data Pengujian
+
+Hapus direktori sementara setelah pengujian:
+
+```bash
+rm -rf -- /tmp/backup-demo
+```
+
+Pembersihan hanya dilakukan terhadap direktori data uji. Jangan menghapus `output/`, `logs/`, atau `evidence/` karena berisi laporan, log, dan bukti pengujian proyek.
