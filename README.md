@@ -62,7 +62,7 @@ Kelompok terdiri atas enam anggota dan telah memperoleh persetujuan dosen pengam
 | 2 | 2510512178 | Muhammad Nur Ihsani Izzul Haq Rosyid | Pengelolaan lock, log, laporan backup, dan integrasi Docker. |
 | 3 | 2510512181 | Muhammad Agung Budi Laksono | Pembuatan arsip backup, pengaturan permission, dan pengujian akses arsip. |
 | 4 | 2510512188 | Panggi Hidayah | Pemulihan data dan pemeriksaan kesesuaian hasil restore. |
-| 5 | 2510512195 | Muhamad Afwan Imam Nasuha | Validasi sumber, direktori tujuan, parameter, dan hak akses direktori. Validasi sumber, direktori tujuan, parameter, dan hak akses direktori, serta pemeliharaan repository GitHub, penataan struktur direktori dan berkas, dan pengelolaan dokumentasi proyek. |
+| 5 | 2510512195 | Muhamad Afwan Imam Nasuha | Validasi sumber, direktori tujuan, parameter, dan hak akses direktori, serta pemeliharaan repository GitHub, penataan struktur direktori dan berkas, serta pengelolaan dokumentasi proyek. |
 | 6 | 2510512202 | Muhammad Rafif Husein Salam | Monitoring proses backup, penggunaan CPU dan memori, serta membantu pengujian hak akses arsip. |
 
 Rincian kontribusi dan pembagian pekerjaan masing-masing anggota tersedia pada [`docs/contribution-map.md`](docs/contribution-map.md).
