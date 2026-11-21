@@ -169,72 +169,152 @@ command -v bash realpath tar gzip sha256sum flock ps
 
 Pastikan terminal berada pada direktori utama repository sebelum menjalankan script.
 
-### 10.2 Menyiapkan Data Pengujian
+### 10.2 Konfigurasi Lingkungan Pengujian
+
+Sebelum menjalankan sistem, muat konfigurasi lingkungan demonstrasi yang telah disediakan pada repository.
 
 ```bash
-WORK_DIR="/tmp/backup-demo"
+cd ~/automation-backup-and-recovery-data
 
-mkdir -p "$WORK_DIR/source" "$WORK_DIR/destination"
-
-printf 'Dokumen pertama\n' > "$WORK_DIR/source/a.txt"
-printf 'Dokumen kedua\n' > "$WORK_DIR/source/b.txt"
+source tests/demo/demo-env.sh
 ```
 
-### 10.3 Menjalankan Backup
+Script konfigurasi tersebut menetapkan beberapa variabel lingkungan:
 
-Jalankan backup dengan dua parameter berupa direktori sumber dan direktori tujuan:
+| Variabel | Fungsi |
+|---|---|
+| `PROJECT` | Lokasi direktori utama repository. |
+| `DEMO` | Lokasi direktori data pengujian. |
+| `SOURCE` | Direktori sumber data yang akan dicadangkan. |
+| `DEST` | Direktori tujuan penyimpanan arsip backup. |
+
+Direktori sumber telah disediakan di dalam repository dan berisi beberapa berkas uji beserta subdirektori. Script demo-env.sh menetapkan lokasi direktori tersebut ke variabel SOURCE, sehingga pengguna tidak perlu membuat data sumber secara manual.
+
+Periksa konfigurasi yang telah dimuat:
 
 ```bash
-bash scripts/backup.sh "$WORK_DIR/source" "$WORK_DIR/destination"
+echo "Project : $PROJECT"
+echo "Source  : $SOURCE"
+echo "Dest    : $DEST"
 ```
 
-Cari arsip terbaru:
+Siapkan direktori tujuan backup:
 
 ```bash
-ARCHIVE="$(find "$WORK_DIR/destination" \
+mkdir -p "$DEST"
+```
+
+Periksa data sumber dan direktori tujuan:
+
+```bash
+find "$SOURCE" -maxdepth 2 -type f -print
+ls -ld "$SOURCE" "$DEST"
+```
+
+Pada konfigurasi demonstrasi ini, direktori sumber menggunakan data uji yang tersedia pada `tests/demo/source`, sedangkan hasil arsip disimpan pada `output/demo-backup`.
+
+Untuk penggunaan dengan direktori sendiri, pengguna dapat menetapkan nilai `SOURCE` dan `DEST` sesuai lokasi data yang akan dicadangkan.
+
+### 10.3 Validasi dan Menjalankan Backup
+
+#### A. Validasi Sumber dan Tujuan
+
+Sebelum membuat arsip, jalankan modul `validation.sh` untuk memeriksa direktori sumber dan tujuan.
+
+```bash
+bash "$PROJECT/scripts/validation.sh" "$SOURCE" "$DEST"
+
+VALIDATION_STATUS=$?
+
+echo "Exit status validasi: $VALIDATION_STATUS"
+```
+
+Hasil yang diharapkan adalah pesan `Validasi berhasil` dengan exit status 0.
+
+Apabila validasi berhasil, proses dapat dilanjutkan ke tahap backup. Jika exit status bukan 0, hentikan proses dan perbaiki penyebab kegagalan terlebih dahulu.
+
+#### B. Menjalankan Backup
+
+Setelah validasi berhasil, jalankan modul `backup.sh` menggunakan direktori sumber dan tujuan yang telah dikonfigurasi.
+
+```bash
+bash "$PROJECT/scripts/backup.sh" "$SOURCE" "$DEST"
+
+BACKUP_STATUS=$?
+
+echo "Exit status backup: $BACKUP_STATUS"
+```
+
+Backup dinyatakan berhasil apabila menghasilkan exit status 0.
+
+Modul `backup.sh` juga menjalankan validasi secara internal sebelum membuat arsip sebagai pemeriksaan ulang.
+
+#### C. Memeriksa Arsip Backup
+
+Setelah backup berhasil, cari arsip terbaru pada direktori tujuan:
+
+```bash
+ARCHIVE="$(find "$DEST" \
   -maxdepth 1 -type f -name 'backup_*.tar.gz' \
   -printf '%T@ %p\n' | sort -nr | head -n 1 | cut -d' ' -f2-)"
 
-echo "$ARCHIVE"
+echo "Arsip terbaru: $ARCHIVE"
 ```
+
+Pastikan arsip berhasil ditemukan:
+
+```bash
+if [[ -z "$ARCHIVE" || ! -f "$ARCHIVE" ]]; then
+    echo "ERROR: Arsip backup tidak ditemukan."
+else
+    echo "Arsip backup berhasil ditemukan."
+fi
+```
+Jika arsip tidak ditemukan, hentikan proses dan periksa kembali hasil backup sebelum melanjutkan ke verifikasi checksum.
 
 ### 10.4 Verifikasi Checksum
 
-Memeriksa integritas arsip:
+Proses backup menghasilkan file checksum SHA-256 sebagai pendamping arsip. Verifikasi dilakukan untuk memastikan integritas arsip tetap terjaga.
 
 ```bash
-bash scripts/verify.sh verify "$ARCHIVE"
+bash "$PROJECT/scripts/verify.sh" verify "$ARCHIVE"
 ```
 
-Membuat file checksum:
+Shortcut verifikasi juga tersedia:
 
 ```bash
-bash scripts/verify.sh generate "$ARCHIVE"
-```
-
-Shortcut verifikasi:
-
-```bash
-bash scripts/verify.sh "$ARCHIVE"
+bash "$PROJECT/scripts/verify.sh" "$ARCHIVE"
 ```
 
 ### 10.5 Pemulihan Data (Restore)
 
-Direktori tujuan restore harus tersedia, dapat ditulis, dan kosong.
+Pemulihan dilakukan dengan mengekstrak arsip ke direktori pengujian yang tersedia, dapat ditulis, dan kosong.
+
+Buat direktori tujuan restore baru:
 
 ```bash
-mkdir -p "$WORK_DIR/restore"
-
-bash scripts/restore.sh "$ARCHIVE" "$WORK_DIR/restore"
+RESTORE_DIR="$(mktemp -d "$DEMO/restore-readme.XXXXXX")"
 ```
 
-Bandingkan hasil pemulihan dengan sumber:
+Jalankan proses pemulihan:
 
 ```bash
-diff -r "$WORK_DIR/source" "$WORK_DIR/restore/source"
+bash "$PROJECT/scripts/restore.sh" "$ARCHIVE" "$RESTORE_DIR"
 ```
 
-Jika tidak ada output dan exit status 0, hasil pemulihan identik dengan sumber.
+Bandingkan hasil pemulihan dengan direktori sumber:
+
+```bash
+diff -r "$SOURCE" "$RESTORE_DIR/$(basename "$SOURCE")"
+```
+
+Jika tidak ada output dan exit status bernilai 0, isi data hasil pemulihan identik dengan sumber.
+
+Setelah pengujian selesai, hapus direktori restore sementara:
+
+```bash
+rm -rf -- "$RESTORE_DIR"
+```
 
 ### 10.6 Monitoring CPU, Memori, dan Proses
 
