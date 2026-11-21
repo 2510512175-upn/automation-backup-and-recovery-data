@@ -71,6 +71,8 @@ Rincian kontribusi dan pembagian pekerjaan masing-masing anggota tersedia pada [
 
 Pengujian dilakukan melalui skenario positif dan negatif. Skenario positif digunakan untuk memastikan fitur berjalan sesuai fungsinya, sedangkan skenario negatif digunakan untuk memastikan sistem menolak kondisi atau input yang tidak sesuai.
 
+Seluruh bukti pengujian T01–T18 disimpan di direktori induk evidence/07-ubuntu-server-demo/. Nama direktori pada kolom Bukti merupakan subdirektori dari direktori tersebut.
+
 | ID | Penanggung Jawab | Positif | Negatif | Hasil Aktual | Status | Bukti |
 |---|---|---|---|---|---|---|
 | T01 | Afwan (2510512195) | Validasi sumber dan tujuan yang tersedia berhasil. | - | Validasi berhasil, exit 0. | Lulus | `01-validation/` |
